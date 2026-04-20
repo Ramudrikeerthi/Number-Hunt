@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Guess Game</title>
+
+<style>
+:root {
+    --bg: linear-gradient(135deg, #667eea, #764ba2);
+    --card: rgba(255,255,255,0.1);
+    --text: white;
+}
+
+.light {
+    --bg: #f5f5f5;
+    --card: #ffffff;
+    --text: #222;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    width: 360px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #ff7eb3;
+    color: white;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+input {
+    padding: 10px;
+    width: 80%;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="top-bar">
+<button onclick="toggleTheme()">🌗 Theme</button>
+<button onclick="restartGame()">🔁 Restart</button>
+</div>
+
+<h2>🎯 Guess the Number</h2>
+
+<select id="difficulty" onchange="setDifficulty()">
+    <option value="easy">Easy (1-50)</option>
+    <option value="medium" selected>Medium (1-100)</option>
+    <option value="hard">Hard (1-200)</option>
+</select>
+
+<p id="range"></p>
+
+<input type="number" id="guess" placeholder="Enter guess">
+<br>
+<button onclick="checkGuess()">Submit</button>
+
+<p id="message"></p>
+<p id="timer"></p>
+<p id="prize"></p>
+<p id="attempts"></p>
+<p id="highscore"></p>
+
+</div>
+
+<script>
+let randomNum, prizeMoney, attempts, maxRange;
+let timeLeft, timerInterval;
+
+// Theme
+if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light");
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("light");
+    localStorage.setItem("theme",
+        document.body.classList.contains("light") ? "light" : "dark");
+}
+
+// Difficulty
+function setDifficulty() {
+    let level = document.getElementById("difficulty").value;
+
+    if (level === "easy") maxRange = 50;
+    else if (level === "medium") maxRange = 100;
+    else maxRange = 200;
+
+    startGame();
+}
+
+// Start Game
+function startGame() {
+    randomNum = Math.floor(Math.random() * maxRange) + 1;
+    prizeMoney = 100;
+    attempts = 0;
+    timeLeft = 30;
+
+    document.getElementById("range").innerHTML = "Range: 1 - " + maxRange;
+    document.getElementById("message").innerHTML = "";
+    document.getElementById("prize").innerHTML = "💰 ₹" + prizeMoney;
+    document.getElementById("attempts").innerHTML = "Attempts: 0";
+    document.getElementById("highscore").innerHTML =
+        "🏆 Best: " + (localStorage.getItem("best") || "None");
+
+    startTimer();
+}
+
+// Timer
+function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerHTML = "⏱️ " + timeLeft + "s";
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("message").innerHTML =
+                "⏰ Time Up! Number was " + randomNum;
+        }
+    }, 1000);
+}
+
+// Check Guess
+function checkGuess() {
+    let guess = Number(document.getElementById("guess").value);
+    if (!guess) return;
+
+    attempts++;
+
+    if (guess === randomNum) {
+        clearInterval(timerInterval);
+
+        document.getElementById("message").innerHTML =
+            "🎉 Won ₹" + prizeMoney + " in " + attempts + " tries!";
+
+        let best = localStorage.getItem("best");
+        if (!best || attempts < best) {
+            localStorage.setItem("best", attempts);
+        }
+    } else {
+        prizeMoney -= 10;
+
+        document.getElementById("message").innerHTML =
+            guess > randomNum ? "📉 Too High!" : "📈 Too Low!";
+
+        if (prizeMoney <= 0) {
+            document.getElementById("message").innerHTML =
+                "❌ Game Over! Number was " + randomNum;
+            clearInterval(timerInterval);
+        }
+    }
+
+    document.getElementById("prize").innerHTML = "💰 ₹" + prizeMoney;
+    document.getElementById("attempts").innerHTML = "Attempts: " + attempts;
+}
+
+// Restart
+function restartGame() {
+    startGame();
+}
+
+// Init
+setDifficulty();
+</script>
+
+</body>
+</html>
