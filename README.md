@@ -16,7 +16,7 @@ A feature-rich number guessing game built using HTML, CSS, and JavaScript.
 - JavaScript
 
 ## 🌐 Live Demo
-https://yourusername.github.io/Guess-The-Number-Advanced/
+ https://ramudrikeerthi.github.io/Number-Hunt/
 
 ## 📸 Screenshot
 <img width="1906" height="930" alt="image" src="https://github.com/user-attachments/assets/1de6b2ee-2d8c-4921-b6d6-042e007ea138" />
