@@ -1,4 +1,3 @@
-<img width="1906" height="930" alt="image" src="https://github.com/user-attachments/assets/8a6e35fb-482d-4490-be6b-1d489db4dfa6" /># Number-Hunt
 An interactive number guessing game with difficulty levels, timer mode, dark/light theme, and high score tracking using JavaScript.
 # 🎯 Guess The Number Advanced
 
